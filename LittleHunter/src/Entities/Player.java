@@ -4,7 +4,6 @@ package Entities;
 import TileMap.*;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
-import GameState.GameStateManager;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -15,7 +14,7 @@ public class Player extends MapObject {
 	private int MaxHP;
 	private int Ammo;
 	private int MaxAmmo;
-	private boolean Dead;
+	public boolean Dead;
 	private boolean flinch;
 	private long flinchTimer;
 	
@@ -63,15 +62,15 @@ public class Player extends MapObject {
 		stopjumpstart = 0.3;
 		
 		faceright = true;
-		
 		HP = 1;
-		MaxHP = 20;
-		Ammo = MaxAmmo = 30;
+		MaxHP = 10;
+		Ammo = 0;
+		MaxAmmo = 15;
 		ArrowCost = 1;
 		ArrowDMG = 5;
 		Arrows = new ArrayList<Arrow>();
 	
-		AttackDMG = 9;
+		AttackDMG = 8;
 		AttackRNG = 40;
 		
 		//Load player sprite onto game 
@@ -132,6 +131,10 @@ public class Player extends MapObject {
 	public void SetHP( int i)
 	{
 		HP += i;
+	}
+	public void SetAmmo(int i)
+	{
+		Ammo +=i;
 	}
 	
 	//Function that determines where the next position of the player is by reading keyboard input
@@ -247,22 +250,33 @@ public class Player extends MapObject {
 		}		
 	}
 	
+	//For JUnit Testing
 	//Damage to player when hit
 	public void hit(int DMG)
 	{
 		if(flinch) return;
 		HP -= DMG;
-		if(HP < 0) HP = 0;
+		if(HP < 0) 
+		{
+			HP = 0;
+		}
 		if(HP == 0) 
 		{
 			Dead = true;
 		}
-		//jump when hit
-		//dy = -3;
 		flinch = true;
 		flinchTimer = System.nanoTime();
 	}
 	
+	//For JUnit Testing
+	public void AmmoCost()
+	{
+		Ammo -= ArrowCost;
+		Arrow AA = new Arrow(tilemap, faceright);
+		//Set in the same player tile
+		AA.setposition(x, y);
+		Arrows.add(AA);
+	}
 	//Updates drawing of player on screen
 	public void update()
 	{
@@ -287,7 +301,7 @@ public class Player extends MapObject {
 			}
 		}
 		
-		//Bow attack, Checking if there enough arrows in player inventory.
+		//Bow attack, Checking if there is enough arrows in player inventory.
 		if(Ammo > MaxAmmo)
 		{
 			Ammo = MaxAmmo;
@@ -297,11 +311,7 @@ public class Player extends MapObject {
 			//Checks if there is enough ammo to shoot arrow
 			if (Ammo > 0)
 			{
-				Ammo -= ArrowCost;
-				Arrow AA = new Arrow(tilemap, faceright);
-				//Set in the same player tile
-				AA.setposition(x, y);
-				Arrows.add(AA);
+				AmmoCost();
 			}
 		}
 		
@@ -326,7 +336,7 @@ public class Player extends MapObject {
 			}
 		}
 		
-		//TO FIX BUG WITH COMBINATION OF ATTACKS BOW & SWORD MAKE IT A SKILL AND CHANGE TO SWITCH CASE CODE!!!!!
+		//TO FIX BUG WITH COMBINATION OF ATTACKS BOW & SWORD MAKE IT A SKILL!!!!!
 		//SetAnimation for all player positions
 		if(Attack)
 		{
@@ -344,7 +354,7 @@ public class Player extends MapObject {
 			{
 				curretAction = BOW;
 				animation.setFrames(sprites.get(BOW));
-				animation.setDelay(35);
+				animation.setDelay(25);
 				width = 30;
 			}
 		}

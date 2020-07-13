@@ -1,15 +1,15 @@
 package GameState;
 
-import Main.GamePanel;
+
 import TileMap.Background;
 import java.awt.*;
-import java.awt.event.KeyEvent;
+import Handlers.KeyHandler;
 
 public class DeadEnd extends GameState 
 {
 
 	private Background bg;
-	
+	private Font font;
 
 	public DeadEnd(GameStateManager gsm)
 	{
@@ -22,30 +22,37 @@ public class DeadEnd extends GameState
 	{
 		try {
 			//Resource folder
-			bg = new Background("/Backgrounds/DeadEnd.gif", 1);
+			bg = new Background("/Backgrounds/DeadEnd.png", 1);
+			font = new Font("Ariel", Font.BOLD, 15);
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
+	
 	public void update()
 	{
+		//Key handle update
+		handleInput();
 	}
 	public void draw(Graphics2D g)
 	{
 		//draw background
 		bg.draw(g);
+		g.setFont(font);
+		g.setColor(Color.WHITE);
+		g.drawString("Press ESC to Exit" ,95 , 175);
+		g.drawString("Press Enter for Menu", 90, 195);
 	}
 
-	//Key functions at menu window
-	public void keyPressed(int k)
-	{
-		if (k== KeyEvent.VK_ESCAPE) {
-			Runtime.getRuntime().exit(0);
+	//Key functions at window
+	public void handleInput() {
+		if(KeyHandler.isPressed(KeyHandler.ESCAPE)) 
+		{
+			System.exit(0);
 		}
-		if (k== KeyEvent.VK_ENTER) {
+		if(KeyHandler.isPressed(KeyHandler.ENTER)) {
 			gsm.setstate(GameStateManager.MENUSTATE);
+			}
 		}
-	}	
-	public void keyRelesed(int k){}
-}
+	}

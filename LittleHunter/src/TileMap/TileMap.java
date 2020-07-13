@@ -26,7 +26,6 @@ public class TileMap
 	
 	//Map 
 	private int [][] map;
-	private int [][] map2;
 	private int tileSize;
 	private int numRows;
 	private int numCols;

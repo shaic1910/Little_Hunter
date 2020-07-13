@@ -19,7 +19,7 @@ public class Arrow extends MapObject{
 		super(tm);
 		
 		faceright = right;
-		movespeed = 5.5;
+		movespeed = 4.5;
 		
 		//Sets the move direction of arrow
 		if(right)
@@ -74,7 +74,7 @@ public class Arrow extends MapObject{
 			return;
 		}
 		hit = true;
-		//No animation yet for arrwo hit
+		//No animation yet for Arrow hit
 		//animation.setFrames(HitSprite);
 		//animation.setDelay(70);
 		dx = 0;

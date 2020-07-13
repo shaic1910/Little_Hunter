@@ -4,21 +4,22 @@ package GameState;
 import TileMap.*;
 import Entities.*;
 import Entity.Enemies.Mushroom;
+import Handlers.KeyHandler;
 import Main.GamePanel;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+
+import javax.swing.JOptionPane;
 
 public class LEVEL1 extends GameState 
 {
 	private TileMap tileMap;
 	private Background bg; 
-	
 	private Player player;
-	
 	private ArrayList<Enemy> enemies;
-	
 	private HUD hud;
+	private ScoreManager SM;
+	
 	//Constructor of level 1
 	public LEVEL1(GameStateManager gsm)
 	{
@@ -31,19 +32,22 @@ public class LEVEL1 extends GameState
 	{
 		tileMap = new TileMap(30);
 		tileMap.loadTiles("/Tilesets/grasstileset.png");
-		tileMap.loadMap("/Maps/level1-1.map");
+		tileMap.loadMap("/Maps/level1.map");
 		tileMap.setPosition(0, 0);
 		tileMap.setMapCam(1);
-		
-		bg = new Background("/Backgrounds/forrest1.gif", 0.1);
+		bg = new Background("/Backgrounds/forrest1.png", 0.1);
 		player = new Player(tileMap);
-		player.SetHP(2);
 		//Sets position of player in level 1
 		player.setposition(80 ,195);
+		player.SetHP(2);
+		player.SetAmmo(5);
 		PopulateEnemies();
-		
 		hud = new HUD(player);
+		this.SM = hud.SM;
+		String name = JOptionPane.showInputDialog("Please insert your name :)");
+		hud.SM.SetPlayerName(name);
 	}
+	
 	
 	private void PopulateEnemies()
 	{
@@ -56,6 +60,7 @@ public class LEVEL1 extends GameState
 			new Point(1525, 190),
 			new Point(1680, 190),
 			new Point(1800, 190),
+			new Point(2200, 190),
 		};
 		
 		//For to go through points array and add enemies on map
@@ -72,7 +77,7 @@ public class LEVEL1 extends GameState
 	{
 		if(player.gety() > 210 )
 		{
-			if(player.getx() > 2000 )
+			if(player.getx() > 1900 )
 			{
 				player.setposition(1950 ,60);
 				player.hit(1);
@@ -95,12 +100,24 @@ public class LEVEL1 extends GameState
 	{
 		if(player.getHP() == 0)
 		{
+			hud.SM.GameScoreEvent();
+			hud.SM.ResetScore();
 			gsm.setstate(GameStateManager.DEADEND);
 		}
 	}
 	
-	public void update() 
+	public void CheckIFWon()
 	{
+		if(player.getx() > 2400 )
+		{
+			gsm.setstate(GameStateManager.LEVEL2);
+		}
+	}
+	
+	public void update()
+	{
+		//Key handle update
+		handleInput();
 		//update player
 		player.update();
 		CheckFallPos();
@@ -122,9 +139,11 @@ public class LEVEL1 extends GameState
 			if(enemies.get(i).isDead())
 			{
 				enemies.remove(i);
+				SM.increaseScore(50);
 				i--;
 			}
 		}
+		CheckIFWon();
 		CheckIFDied();
 	}
 	
@@ -150,18 +169,12 @@ public class LEVEL1 extends GameState
 		hud.draw(g);
 		
 	}
-	public void keyPressed(int k) 
-	{
-		if(k == KeyEvent.VK_LEFT) player.SetLeft(true);
-		if(k == KeyEvent.VK_RIGHT) player.SetRight(true);
-		if(k == KeyEvent.VK_SPACE) player.SetJump(true);
-		if(k == KeyEvent.VK_S) player.SetAttacking();
-		if(k == KeyEvent.VK_D) player.SetFiring();
-	}
-	public void keyRelesed(int k) 
-	{
-		if(k == KeyEvent.VK_LEFT) player.SetLeft(false);
-		if(k == KeyEvent.VK_RIGHT) player.SetRight(false);
-		if(k == KeyEvent.VK_SPACE) player.SetJump(false);
+	
+	public void handleInput() {
+		player.SetLeft(KeyHandler.keyState[KeyHandler.LEFT]);
+		player.SetRight(KeyHandler.keyState[KeyHandler.RIGHT]);
+		player.SetJump(KeyHandler.keyState[KeyHandler.SPACE]);
+		if(KeyHandler.isPressed(KeyHandler.BUTTON1)) player.SetAttacking();
+		if(KeyHandler.isPressed(KeyHandler.BUTTON2)) player.SetFiring();
 	}
 }

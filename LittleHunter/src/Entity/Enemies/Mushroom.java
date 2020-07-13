@@ -17,8 +17,8 @@ public class Mushroom extends Enemy{
 	{
 		super(tm);
 		
-		movespeed =  0.3;
-		maxspeed = 0.3;
+		movespeed =  0.5;
+		maxspeed = 0.5;
 		fallspeed = 0.2;
 		maxfallspeed = 10.0;
 		
@@ -114,9 +114,7 @@ public class Mushroom extends Enemy{
 	
 	public void draw(Graphics2D g)
 	{
-		//BUG not working accordingly
-		//if(NotOnScreenObj()) return;
-		
+
 		setMapPosition();
 		
 		super.draw(g);

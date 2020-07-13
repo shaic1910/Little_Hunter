@@ -1,5 +1,4 @@
-//Class for enemies in game, Last changed 17/04/2020 21:30
-//Enemy entity extends from enemy  
+
 package Entity.Enemies;
 
 import Entities.Animation;
@@ -17,26 +16,26 @@ public class Goblin extends Enemy{
 	{
 		super(tm);
 		
-		movespeed =  0.5;
-		maxspeed = 0.5;
-		fallspeed = 0.3;
+		movespeed =  1.4;
+		maxspeed = 1.4;
+		fallspeed = 0.2;
 		maxfallspeed = 10.0;
 		
 		
-		width = 35;
-		height =  45;
-		cwidth = 35;
-		cheight = 25;
+		width = 30;
+		height =  40;
+		cwidth = 30;
+		cheight = 30;
 		
-		HP = MaxHP = 2;
-		DMG = 2;
+		HP = MaxHP = 40;
+		DMG = 4;
 		
 		//Load enemy sprite sheet
 		try
 		{
 			BufferedImage spritesheet = ImageIO.read(
-					getClass().getResourceAsStream("/Sprites/Enemies/Mush.png"));
-				sprites = new BufferedImage[7];
+					getClass().getResourceAsStream("/Sprites/Enemies/Goblin.png"));
+				sprites = new BufferedImage[4];
 				for(int i = 0; i < sprites.length; i++)
 				{
 					sprites[i] = spritesheet.getSubimage(i * width, 0, width, height);		
@@ -114,8 +113,6 @@ public class Goblin extends Enemy{
 	
 	public void draw(Graphics2D g)
 	{
-		//BUG not working accordingly
-		//if(NotOnScreenObj()) return;
 		
 		setMapPosition();
 		
